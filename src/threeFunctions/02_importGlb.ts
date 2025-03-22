@@ -16,7 +16,7 @@ export const importGlb = () => {
 		0.1,
 		1000,
 	);
-	camera.position.set(0, 5, 5);
+	camera.position.set(0, 3, 5);
 	camera.lookAt(0, 1, 0);
 
 	//ライトの追加
@@ -53,7 +53,8 @@ export const importGlb = () => {
 		console.error(error);
 	};
 	loader.load(
-		"/avatar_gltf_test_animation.glb",
+		"/avatar_wavinghand.glb",
+		// "/avatar_gltf_test_animation.glb",
 		onGltfLoad,
 		onGltfProgress,
 		onGltfError,
