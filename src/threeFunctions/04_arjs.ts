@@ -7,7 +7,7 @@ import * as THREE from "three";
 import { type GLTF, GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 const PATTERN_PATH = "./pattern-marker.patt";
-const MODEL_PATH = "./avatar_wavinghand.glb";
+const MODEL_PATH = "./avatar_wavinghand_v6.glb";
 
 export const arjs = () => {
 	let w: number;
@@ -100,6 +100,60 @@ export const arjs = () => {
 		//gltfロード用の関数を宣言
 		const onGltfLoad = (gltf: GLTF) => {
 			const model = gltf.scene;
+
+			model.traverse((child) => {
+				const setPolygonOffsetFactor = (
+					child: THREE.Object3D<THREE.Object3DEventMap>,
+					factor: number,
+				) => {
+					if (!(child instanceof THREE.Mesh)) return;
+					child.material.polygonOffset = true;
+					child.material.polygonOffsetFactor = factor;
+				};
+				const setPolygonOffsetUnits = (
+					child: THREE.Object3D<THREE.Object3DEventMap>,
+					units: number,
+				) => {
+					if (!(child instanceof THREE.Mesh)) return;
+					child.material.polygonOffset = true;
+					child.material.polygonOffsetUnits = units;
+				};
+
+				if (child instanceof THREE.Mesh) {
+					child.material.depthWrite = true;
+					// child.material.depthTest = true;
+					child.material.polygonOffset = true;
+					if (child.name === "Hair") {
+						setPolygonOffsetFactor(child, -1.0);
+						setPolygonOffsetUnits(child, -1.0);
+					}
+					if (child.name === "Tops") {
+						setPolygonOffsetFactor(child, -0.7);
+						setPolygonOffsetUnits(child, -0.5);
+					}
+					if (child.name === "Bottoms") {
+						setPolygonOffsetFactor(child, -0.25);
+						setPolygonOffsetUnits(child, -0.25);
+					}
+
+					if (child.name === "Body_1") {
+						//body
+						setPolygonOffsetFactor(child, 1.25);
+						setPolygonOffsetUnits(child, 0.75);
+					}
+					if (child.name === "Body_2") {
+						//face
+						setPolygonOffsetFactor(child, 0.5);
+						setPolygonOffsetUnits(child, 1.0);
+					}
+					if (child.name === "Body_3") {
+						//eye
+						setPolygonOffsetFactor(child, 0.25);
+						setPolygonOffsetUnits(child, 0.25);
+					}
+				}
+			});
+
 			model.scale.set(1, 1, 1);
 			model.position.set(0, 0, 0);
 			scene.add(model);
