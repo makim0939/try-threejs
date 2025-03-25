@@ -1,7 +1,12 @@
 import "./App.css";
+import { FirstDemo } from "./R3F/firstDemo";
 
 function App() {
-	return <></>;
+	return (
+		<>
+			<FirstDemo />
+		</>
+	);
 }
 
 export default App;
