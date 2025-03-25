@@ -6,8 +6,9 @@ import type {
 import * as THREE from "three";
 import { type GLTF, GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
-const PATTERN_PATH = "./pattern-marker.patt";
+const PATTERN_PATH = "./pattern-dotfish512.patt";
 const MODEL_PATH = "./avatar_wavinghand_v6.glb";
+const OMEDETOU_MODEL_PATH = "./omedetou_v2.glb";
 
 export const arjs = () => {
 	let w: number;
@@ -75,15 +76,11 @@ export const arjs = () => {
 		// });
 
 		// ArMarkerControlsを設定
-		const markerControls = new THREEx.ArMarkerControls(
-			arToolkitContext,
-			camera,
-			{
-				type: "pattern",
-				patternUrl: PATTERN_PATH,
-				changeMatrixMode: "cameraTransformMatrix",
-			},
-		);
+		new THREEx.ArMarkerControls(arToolkitContext, camera, {
+			type: "pattern",
+			patternUrl: PATTERN_PATH,
+			changeMatrixMode: "cameraTransformMatrix",
+		});
 	};
 
 	const setObject = () => {
@@ -170,12 +167,31 @@ export const arjs = () => {
 		};
 		loader.load(MODEL_PATH, onGltfLoad, onGltfProgress, onGltfError);
 
+		let mixerOmedetou: THREE.AnimationMixer;
+		const onGltfLoadOmedetou = (gltf: GLTF) => {
+			const model = gltf.scene;
+			model.scale.set(1, 1, 1);
+			model.position.set(0, 0, 0);
+			scene.add(model);
+			//アニメーションミキサー（アニメーションプレイヤー）を作成
+			mixerOmedetou = new THREE.AnimationMixer(model);
+			const action = mixerOmedetou.clipAction(gltf.animations[0]);
+			action.play();
+		};
+		loader.load(
+			OMEDETOU_MODEL_PATH,
+			onGltfLoadOmedetou,
+			onGltfProgress,
+			onGltfError,
+		);
+
 		const clock = new THREE.Clock();
 		clock.getElapsedTime();
 		function tick() {
 			const deltaTime = clock.getDelta();
 			if (mixer) {
 				mixer.update(deltaTime);
+				mixerOmedetou.update(deltaTime);
 			}
 			window.requestAnimationFrame(tick);
 		}
