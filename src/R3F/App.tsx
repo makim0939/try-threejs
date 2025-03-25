@@ -1,5 +1,5 @@
 import "./App.css";
-import { FirstDemo } from "./R3F/firstDemo";
+import { FirstDemo } from "./components/firstDemo";
 
 function App() {
 	return (
